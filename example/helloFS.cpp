@@ -1,10 +1,12 @@
+// Hello filesystem class implementation
+
 #include "helloFS.h"
+
+#include <iostream>
 
 #include <stdio.h>
 
-#include <iostream>
-#include <string>
-
+// include in one .cpp file
 #include "Fuse-impl.h"
 
 static const char *hello_str = "Hello World!\n";
@@ -75,4 +77,3 @@ int HelloFS::read(const char *path, char *buf, size_t size, off_t offset,
 
 	return size;
 }
-
