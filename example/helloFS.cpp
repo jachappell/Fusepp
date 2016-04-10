@@ -31,11 +31,8 @@ int HelloFS::getattr(const char *path, struct stat *stbuf)
 }
 
 int HelloFS::readdir(const char *path, void *buf, fuse_fill_dir_t filler,
-			               off_t offset, struct fuse_file_info *fi)
+			               off_t, struct fuse_file_info *)
 {
-	(void) offset;
-	(void) fi;
-
 	if (strcmp(path, "/") != 0)
 		return -ENOENT;
 
@@ -68,7 +65,7 @@ int HelloFS::read(const char *path, char *buf, size_t size, off_t offset,
 		return -ENOENT;
 
 	len = strlen(hello_str);
-	if (offset < len) {
+	if ((size_t)offset < len) {
 		if (offset + size > len)
 			size = len - offset;
 		memcpy(buf, hello_str + offset, size);
