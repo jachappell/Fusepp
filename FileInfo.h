@@ -2,7 +2,7 @@
 /**
  *  FuseApp -- A simple C++ wrapper for the FUSE filesystem
  *
- *  Copyright (C) 2015 by James A. Chappell (rlrrlrll@gmail.com)
+ *  Copyright (C) 2016 by James A. Chappell (rlrrlrll@gmail.com)
  *
  *  Permission is hereby granted, free of charge, to any person
  *  obtaining a copy of this software and associated documentation
@@ -22,16 +22,6 @@
  *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  *  OTHER DEALINGS IN THE SOFTWARE.
  */
-//=================================================================
-/*
- * FileInfo.h: Version 0.01
- * Created by James A. Chappell
- * Created 25 April 2015
- *
- * History:
- * 25-apr-2015  created
- */
-//==============
 
 #ifndef __FILEINFO_H__
 #define __FILEINFO_H__
@@ -53,35 +43,37 @@ typedef std::map<std::string, FileInfo> FileMap;
   FileInfo(const struct stat &fstat, ino_t parent = 0,
            uint64_t data = 0);
 
-  std::string Name() const { return _name; }
-  void Name(const std::string& name) { _name = name; }
+  std::string Name() const { return name_; }
+  void Name(const std::string& name) { name_ = name; }
 
-  ino_t  Parent() const { return _parent; }
-  void Parent(ino_t  parent) { _parent = parent; }
+  ino_t  Parent() const { return parent_; }
+  void Parent(ino_t  parent) { parent_ = parent; }
 
-  uint64_t Data() const { return _data; }
-  void Data(uint64_t data) { _data = data; }
+  uint64_t Data() const { return data_; }
+  void Data(uint64_t data) { data = data_; }
 
-  const struct stat *Stat() const { return &_fstat; }
-  void Stat(const struct stat& fstat) { _fstat = fstat; }
+  const struct stat *Stat() const { return &fstat_; }
+  void Stat(const struct stat& fstat) { fstat_ = fstat; }
 
-  int IsDir() const { return S_ISDIR(_fstat.st_mode); } 
+  int IsDir() const { return S_ISDIR(fstat_.st_mode); } 
 
-  ino_t Ino() const { return _fstat.st_ino; }
+  ino_t Ino() const { return fstat_.st_ino; }
 
-  static bool FetchFileInfo(const std::string& path, FileInfo& file_info);
-  static void InsertFileInfo(const std::string& path, FileInfo& fi);
+  static bool FetchFileInfo(const std::string& path, FileInfo& fi);
+  static void InsertFileInfo(const std::string& path, FileInfo& fi, time_t time_to_refresh_ = 0);
   static void DeleteFileInfo(const std::string& path);
   static void ClearFileInfo();
 
 private:
 
-  struct stat _fstat;
-  std::string _name;
-  ino_t _parent;
-  uint64_t _data;
+  struct stat fstat_;
+  std::string name_;
+  ino_t parent_;
+  uint64_t data_;
+  time_t insertion_time_;
+  time_t time_to_refresh_;
 
-  static FileMap _files;
+  static FileMap files_;
 };
 
 #endif

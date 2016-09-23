@@ -2,7 +2,7 @@
 /**
  *  FuseApp -- A simple C++ wrapper for the FUSE filesystem
  *
- *  Copyright (C) 2015 by James A. Chappell (rlrrlrll@gmail.com)
+ *  Copyright (C) 2016 by James A. Chappell (rlrrlrll@gmail.com)
  *
  *  Permission is hereby granted, free of charge, to any person
  *  obtaining a copy of this software and associated documentation
@@ -22,17 +22,6 @@
  *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  *  OTHER DEALINGS IN THE SOFTWARE.
  */
-//=================================================================
-/*
- * Fuse.h: Version 0.01
- * Created by James A. Chappell
- * Created 25 April 2015
- *
- * History:
- * 25-apr-2015  created
- */
-//==============
-
 
 #ifndef __FUSE_APP_H__
 #define __FUSE_APP_H__
@@ -94,8 +83,8 @@ namespace Fusepp
   public:
     Fuse()
     {
-      memset (&T::_operations, 0, sizeof (struct fuse_operations));
-      load_operations();
+      memset (&T::operations_, 0, sizeof (struct fuse_operations));
+      load_operations_();
     }
 
     int run(int argc, char **argv)
@@ -103,55 +92,55 @@ namespace Fusepp
       return fuse_main(argc, argv, Operations(), this);
     }
 
-    static struct fuse_operations* Operations() { return &_operations; }
+    static struct fuse_operations* Operations() { return &operations_; }
 
-    static T* _this()
+    static T* this_()
     {
       return static_cast<T*>(fuse_get_context()->private_data);
     }
 
   private:
       
-    static void load_operations()
+    static void load_operations_()
     {
-      _operations.readlink = T::readlink;
-      _operations.getattr = T::getattr;
-      _operations.getdir = T::getdir;
-      _operations.mknod = T::mknod;
-      _operations.mkdir = T::mkdir;
-      _operations.unlink = T::unlink;
-      _operations.rmdir = T::rmdir;
-      _operations.symlink = T::symlink;
-      _operations.rename = T::rename;
-      _operations.link = T::link;
-      _operations.chmod = T::chmod;
-      _operations.chown = T::chown;
-      _operations.truncate = T::truncate;
-      _operations.utime = T::utime;
-      _operations.open = T::open;
-      _operations.read = T::read;
-      _operations.write = T::write;
-      _operations.statfs = T::statfs;
-      _operations.flush = T::flush;
-      _operations.release = T::release;
-      _operations.fsync = T::fsync;
-      _operations.setxattr = T::setxattr;
-      _operations.getxattr = T::getxattr;
-      _operations.listxattr = T::listxattr;
-      _operations.removexattr = T::removexattr;
-      _operations.readdir = T::readdir;
-      _operations.opendir = T::opendir;
-      _operations.releasedir = T::releasedir;
-      _operations.fsyncdir = T::fsyncdir;
-      _operations.init = T::init;
-      _operations.destroy = T::destroy;
-      _operations.access = T::access;
-      _operations.create = T::create;
-      _operations.ftruncate = T::ftruncate;
-      _operations.fgetattr = T::fgetattr;
+      operations_.readlink = T::readlink;
+      operations_.getattr = T::getattr;
+      operations_.getdir = T::getdir;
+      operations_.mknod = T::mknod;
+      operations_.mkdir = T::mkdir;
+      operations_.unlink = T::unlink;
+      operations_.rmdir = T::rmdir;
+      operations_.symlink = T::symlink;
+      operations_.rename = T::rename;
+      operations_.link = T::link;
+      operations_.chmod = T::chmod;
+      operations_.chown = T::chown;
+      operations_.truncate = T::truncate;
+      operations_.utime = T::utime;
+      operations_.open = T::open;
+      operations_.read = T::read;
+      operations_.write = T::write;
+      operations_.statfs = T::statfs;
+      operations_.flush = T::flush;
+      operations_.release = T::release;
+      operations_.fsync = T::fsync;
+      operations_.setxattr = T::setxattr;
+      operations_.getxattr = T::getxattr;
+      operations_.listxattr = T::listxattr;
+      operations_.removexattr = T::removexattr;
+      operations_.readdir = T::readdir;
+      operations_.opendir = T::opendir;
+      operations_.releasedir = T::releasedir;
+      operations_.fsyncdir = T::fsyncdir;
+      operations_.init = T::init;
+      operations_.destroy = T::destroy;
+      operations_.access = T::access;
+      operations_.create = T::create;
+      operations_.ftruncate = T::ftruncate;
+      operations_.fgetattr = T::fgetattr;
     }
 
-    static struct fuse_operations _operations;
+    static struct fuse_operations operations_;
 
     static t_getattr getattr ;
     static t_readlink readlink;

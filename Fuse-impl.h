@@ -2,7 +2,7 @@
 /**
  *  FuseApp -- A simple C++ wrapper for the FUSE filesystem
  *
- *  Copyright (C) 2015 by James A. Chappell (rlrrlrll@gmail.com)
+ *  Copyright (C) 2016 by James A. Chappell (rlrrlrll@gmail.com)
  *
  *  Permission is hereby granted, free of charge, to any person
  *  obtaining a copy of this software and associated documentation
@@ -22,16 +22,6 @@
  *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  *  OTHER DEALINGS IN THE SOFTWARE.
  */
-//=================================================================
-/*
- * Fuse-impl.h: Version 0.01
- * Created by James A. Chappell
- * Created 25 April 2015
- *
- * History:
- * 25-apr-2015  created
- */
-//==============
 
 #ifndef __FUSE_IMPL_CPP__
 #define __FUSE_IMPL_CPP__

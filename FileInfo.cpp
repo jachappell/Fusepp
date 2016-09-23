@@ -2,7 +2,7 @@
 /**
  *  FuseApp -- A simple C++ wrapper for the FUSE filesystem
  *
- *  Copyright (C) 2015 by James A. Chappell (rlrrlrll@gmail.com)
+ *  Copyright (C) 2016 by James A. Chappell (rlrrlrll@gmail.com)
  *
  *  Permission is hereby granted, free of charge, to any person
  *  obtaining a copy of this software and associated documentation
@@ -22,19 +22,7 @@
  *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  *  OTHER DEALINGS IN THE SOFTWARE.
  */
-//=================================================================
-/*
- * FileInfo.cpp: Version 0.01
- * Created by James A. Chappell
- * Created 25 April 2015
- *
- * History:
- * 25-apr-2015  created
- */
-//==============
 
-
-#include "File.h"
 #include "FileInfo.h"
 
 #include <pthread.h>
@@ -74,47 +62,51 @@ private:
 
 
 Mutex Lock::_mutex;
-FileInfo::FileMap FileInfo::_files;
+FileInfo::FileMap FileInfo::files_;
 
 
 FileInfo::FileInfo()
-  : _parent(0)
-  , _data(0)
+  : parent_(0)
+  , data_(0)
 {
-  memset(&_fstat, 0, sizeof (struct stat));
+  memset(&fstat_, 0, sizeof (struct stat));
 }
 
 
 FileInfo::FileInfo(const struct stat &fstat, ino_t parent, uint64_t data)
-  : _parent(parent)
-  , _data(data)
+  : parent_(parent)
+  , data_(data)
 {
   Stat(fstat);
 }
 
 
-bool FileInfo::FetchFileInfo(const string& path, FileInfo& file_info)
+bool FileInfo::FetchFileInfo(const string& path, FileInfo& fi)
 {
   bool found(false);
     
   FileMap::iterator it;
 
-  it = _files.find(path);
-  if (it != _files.end())
+  it = files_.find(path);
+  if (it != files_.end())
   {
-    file_info = it->second;
-    found = true;
+    fi = it->second;
+
+    found = ((fi.time_to_refresh_ == 0) || ((time(NULL) - fi.insertion_time_) <= fi.time_to_refresh_));
   }
 
   return found;
 }
 
 
-void FileInfo::InsertFileInfo(const string& path, FileInfo& fi)
+void FileInfo::InsertFileInfo(const string& path, FileInfo& fi, time_t time_to_refresh)
 {
   Lock lock;
 
-  _files[path] = fi;
+  fi.insertion_time_ = time(NULL);
+  fi.time_to_refresh_ = time_to_refresh;
+
+  files_[path] = fi;
 }
 
 
@@ -124,10 +116,10 @@ void FileInfo::DeleteFileInfo(const string& path)
     
   FileMap::iterator it;
 
-  it = _files.find(path);
-  if (it != _files.end())
+  it = files_.find(path);
+  if (it != files_.end())
   {
-    _files.erase(it);
+    files_.erase(it);
   }
 }
 
@@ -136,5 +128,5 @@ void FileInfo::ClearFileInfo()
 {
   Lock lock;
     
-  _files.clear();
+  files_.clear();
 }

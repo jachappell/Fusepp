@@ -2,7 +2,7 @@
 /**
  *  FuseApp -- A simple C++ wrapper for the FUSE filesystem
  *
- *  Copyright (C) 2015 by James A. Chappell (rlrrlrll@gmail.com)
+ *  Copyright (C) 2016 by James A. Chappell (rlrrlrll@gmail.com)
  *
  *  Permission is hereby granted, free of charge, to any person
  *  obtaining a copy of this software and associated documentation
@@ -22,16 +22,6 @@
  *  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  *  OTHER DEALINGS IN THE SOFTWARE.
  */
-//=================================================================
-/*
- * Fuse.cpp: Version 0.01
- * Created by James A. Chappell
- * Created 25 April 2015
- *
- * History:
- * 25-apr-2015  created
- */
-//==============
 
 #include "Fuse.h"
 
@@ -71,4 +61,4 @@ template<class T> Fusepp::t_create Fusepp::Fuse<T>::create = nullptr;
 template<class T> Fusepp::t_ftruncate Fusepp::Fuse<T>::ftruncate = nullptr;
 template<class T> Fusepp::t_fgetattr Fusepp::Fuse<T>::fgetattr = nullptr;
 
-template<class T> struct fuse_operations Fusepp::Fuse<T>::_operations;
+template<class T> struct fuse_operations Fusepp::Fuse<T>::operations_;
