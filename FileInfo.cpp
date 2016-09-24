@@ -92,7 +92,7 @@ bool FileInfo::FetchFileInfo(const string& path, FileInfo& fi)
   {
     fi = it->second;
 
-    found = ((fi.time_to_refresh_ == 0) || ((time(NULL) - fi.insertion_time_) <= fi.time_to_refresh_));
+    found = ((fi.time_to_refresh_ == 0) || ((time(nullptr) - fi.insertion_time_) <= fi.time_to_refresh_));
   }
 
   return found;
@@ -103,7 +103,7 @@ void FileInfo::InsertFileInfo(const string& path, FileInfo& fi, time_t time_to_r
 {
   Lock lock;
 
-  fi.insertion_time_ = time(NULL);
+  fi.insertion_time_ = time(nullptr);
   fi.time_to_refresh_ = time_to_refresh;
 
   files_[path] = fi;
