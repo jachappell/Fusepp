@@ -1,1 +1,1 @@
-C++ version of <a href="http://fuse.sourceforge.net/">FUSE: Filesystem in Userspace</a> -  example/hello.c 
+C++ version of <a href="https://github.com/libfuse/libfuse">FUSE: Filesystem in Userspace</a> -  example/hello.c 
