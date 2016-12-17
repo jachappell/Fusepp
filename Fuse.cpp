@@ -27,7 +27,6 @@
 
 template<class T> Fusepp::t_getattr Fusepp::Fuse<T>::getattr = nullptr;
 template<class T> Fusepp::t_readlink Fusepp::Fuse<T>::readlink = nullptr;
-template<class T> Fusepp::t_getdir Fusepp::Fuse<T>::getdir = nullptr;
 template<class T> Fusepp::t_mknod Fusepp::Fuse<T>::mknod = nullptr;
 template<class T> Fusepp::t_mkdir Fusepp::Fuse<T>::mkdir = nullptr;
 template<class T> Fusepp::t_unlink Fusepp::Fuse<T>::unlink = nullptr;

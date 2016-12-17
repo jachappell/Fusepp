@@ -12,7 +12,7 @@
 static const char *hello_str = "Hello World!\n";
 static const char *hello_path = "/hello";
 
-int HelloFS::getattr(const char *path, struct stat *stbuf)
+int HelloFS::getattr(const char *path, struct stat *stbuf, struct fuse_file_info *)
 {
 	int res = 0;
 
@@ -31,14 +31,15 @@ int HelloFS::getattr(const char *path, struct stat *stbuf)
 }
 
 int HelloFS::readdir(const char *path, void *buf, fuse_fill_dir_t filler,
-			               off_t, struct fuse_file_info *)
+			               off_t, struct fuse_file_info *,
+                     enum fuse_readdir_flags)
 {
 	if (strcmp(path, "/") != 0)
 		return -ENOENT;
 
-	filler(buf, ".", NULL, 0);
-	filler(buf, "..", NULL, 0);
-	filler(buf, hello_path + 1, NULL, 0);
+	filler(buf, ".", NULL, 0, FUSE_FILL_DIR_PLUS);
+	filler(buf, "..", NULL, 0, FUSE_FILL_DIR_PLUS);
+	filler(buf, hello_path + 1, NULL, 0, FUSE_FILL_DIR_PLUS);
 
 	return 0;
 }

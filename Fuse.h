@@ -27,7 +27,7 @@
 #define __FUSE_APP_H__
 
 #ifndef FUSE_USE_VERSION
-#define FUSE_USE_VERSION 26
+#define FUSE_USE_VERSION 30
 #endif
 
 #include <fuse.h>
@@ -38,18 +38,17 @@
 namespace Fusepp
 {
   typedef int(*t_readlink)(const char *, char *, size_t);
-  typedef int(*t_getattr)(const char *, struct stat *);
-  typedef int(*t_getdir) (const char *, fuse_dirh_t, fuse_dirfil_t);
+  typedef int(*t_getattr)(const char *, struct stat *, struct fuse_file_info *);
   typedef int(*t_mknod) (const char *, mode_t, dev_t);
   typedef int(*t_mkdir) (const char *, mode_t);
   typedef int(*t_unlink) (const char *);
   typedef int(*t_rmdir) (const char *);
   typedef int(*t_symlink) (const char *, const char *);
-  typedef int(*t_rename) (const char *, const char *);
+  typedef int(*t_rename) (const char *, const char *,  unsigned int);
   typedef int(*t_link) (const char *, const char *);
-  typedef int(*t_chmod) (const char *, mode_t);
-  typedef int(*t_chown) (const char *, uid_t, gid_t);
-  typedef int(*t_truncate) (const char *, off_t);
+  typedef int(*t_chmod) (const char *, mode_t, struct fuse_file_info *);
+  typedef int(*t_chown) (const char *, uid_t, gid_t, fuse_file_info *);
+  typedef int(*t_truncate) (const char *, off_t, fuse_file_info *);
   typedef int(*t_utime) (const char *, struct utimbuf *);
   typedef int(*t_open) (const char *, struct fuse_file_info *);
   typedef int(*t_read) (const char *, char *, size_t, off_t,
@@ -67,10 +66,10 @@ namespace Fusepp
   typedef int(*t_removexattr) (const char *, const char *);
   typedef int(*t_opendir) (const char *, struct fuse_file_info *);
   typedef int(*t_readdir) (const char *, void *, fuse_fill_dir_t, off_t,
-                           struct fuse_file_info *);
+                           struct fuse_file_info *, enum fuse_readdir_flags);
   typedef int(*t_releasedir) (const char *, struct fuse_file_info *);
   typedef int(*t_fsyncdir) (const char *, int, struct fuse_file_info *);
-  typedef void *(*t_init) (struct fuse_conn_info *);
+  typedef void *(*t_init) (struct fuse_conn_info *, struct fuse_config *cfg);
   typedef void (*t_destroy) (void *);
   typedef int(*t_access) (const char *, int);
   typedef int(*t_create) (const char *, mode_t, struct fuse_file_info *);
@@ -105,7 +104,6 @@ namespace Fusepp
     {
       operations_.readlink = T::readlink;
       operations_.getattr = T::getattr;
-      operations_.getdir = T::getdir;
       operations_.mknod = T::mknod;
       operations_.mkdir = T::mkdir;
       operations_.unlink = T::unlink;
@@ -116,7 +114,6 @@ namespace Fusepp
       operations_.chmod = T::chmod;
       operations_.chown = T::chown;
       operations_.truncate = T::truncate;
-      operations_.utime = T::utime;
       operations_.open = T::open;
       operations_.read = T::read;
       operations_.write = T::write;
@@ -136,15 +133,12 @@ namespace Fusepp
       operations_.destroy = T::destroy;
       operations_.access = T::access;
       operations_.create = T::create;
-      operations_.ftruncate = T::ftruncate;
-      operations_.fgetattr = T::fgetattr;
     }
 
     static struct fuse_operations operations_;
 
     static t_getattr getattr ;
     static t_readlink readlink;
-    static t_getdir getdir;
     static t_mknod mknod;
     static t_mkdir mkdir;
     static t_unlink unlink;
