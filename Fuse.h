@@ -37,8 +37,8 @@
 
 namespace Fusepp
 {
-  typedef int(*t_readlink)(const char *, char *, size_t);
   typedef int(*t_getattr)(const char *, struct stat *, struct fuse_file_info *);
+  typedef int(*t_readlink)(const char *, char *, size_t);
   typedef int(*t_mknod) (const char *, mode_t, dev_t);
   typedef int(*t_mkdir) (const char *, mode_t);
   typedef int(*t_unlink) (const char *);
@@ -49,7 +49,6 @@ namespace Fusepp
   typedef int(*t_chmod) (const char *, mode_t, struct fuse_file_info *);
   typedef int(*t_chown) (const char *, uid_t, gid_t, fuse_file_info *);
   typedef int(*t_truncate) (const char *, off_t, fuse_file_info *);
-  typedef int(*t_utime) (const char *, struct utimbuf *);
   typedef int(*t_open) (const char *, struct fuse_file_info *);
   typedef int(*t_read) (const char *, char *, size_t, off_t,
                         struct fuse_file_info *);
@@ -73,9 +72,23 @@ namespace Fusepp
   typedef void (*t_destroy) (void *);
   typedef int(*t_access) (const char *, int);
   typedef int(*t_create) (const char *, mode_t, struct fuse_file_info *);
-  typedef int(*t_ftruncate) (const char *, off_t, struct fuse_file_info *);
-  typedef int(*t_fgetattr) (const char *, struct stat *,
-                            struct fuse_file_info *);
+  typedef int(*t_lock) (const char *, struct fuse_file_info *, int cmd,
+                        struct flock *);
+  typedef int(*t_utimens) (const char *, const struct timespec tv[2],
+                            struct fuse_file_info *fi);
+  typedef int(*t_bmap) (const char *, size_t blocksize, uint64_t *idx);
+  typedef int(*t_ioctl) (const char *, int cmd, void *arg,
+                         struct fuse_file_info *, unsigned int flags,
+                         void *data);
+  typedef int(*t_poll) (const char *, struct fuse_file_info *,
+                        struct fuse_pollhandle *ph, unsigned *reventsp);
+	typedef int(*t_write_buf) (const char *, struct fuse_bufvec *buf, off_t off,
+                             struct fuse_file_info *);
+  typedef int(*t_read_buf) (const char *, struct fuse_bufvec **bufp,
+                            size_t size, off_t off, struct fuse_file_info *);
+  typedef int (*t_flock) (const char *, struct fuse_file_info *, int op);
+  typedef int (*t_fallocate) (const char *, int, off_t, off_t,
+                              struct fuse_file_info *);
 
   template <class T> class Fuse : private boost::noncopyable
   {
@@ -102,8 +115,8 @@ namespace Fusepp
       
     static void load_operations_()
     {
-      operations_.readlink = T::readlink;
       operations_.getattr = T::getattr;
+      operations_.readlink = T::readlink;
       operations_.mknod = T::mknod;
       operations_.mkdir = T::mkdir;
       operations_.unlink = T::unlink;
@@ -125,14 +138,23 @@ namespace Fusepp
       operations_.getxattr = T::getxattr;
       operations_.listxattr = T::listxattr;
       operations_.removexattr = T::removexattr;
-      operations_.readdir = T::readdir;
       operations_.opendir = T::opendir;
+      operations_.readdir = T::readdir;
       operations_.releasedir = T::releasedir;
       operations_.fsyncdir = T::fsyncdir;
       operations_.init = T::init;
       operations_.destroy = T::destroy;
       operations_.access = T::access;
       operations_.create = T::create;
+      operations_.lock = T::lock;
+      operations_.utimens = T::utimens;
+      operations_.bmap = T::bmap;
+      operations_.ioctl = T::ioctl;
+      operations_.poll = T::poll;
+      operations_.write_buf = T::write_buf;
+      operations_.read_buf = T::read_buf;
+      operations_.flock = T::flock;
+      operations_.fallocate = T::fallocate;
     }
 
     static struct fuse_operations operations_;
@@ -149,7 +171,6 @@ namespace Fusepp
     static t_chmod chmod;
     static t_chown chown;
     static t_truncate truncate;
-    static t_utime utime;
     static t_open open;
     static t_read read;
     static t_write write;
@@ -169,8 +190,15 @@ namespace Fusepp
     static t_destroy destroy;
     static t_access access;
     static t_create create;
-    static t_ftruncate ftruncate;
-    static t_fgetattr  fgetattr;
+    static t_lock lock;
+    static t_utimens utimens;
+    static t_bmap bmap;
+    static t_ioctl ioctl;
+    static t_poll poll;
+    static t_write_buf write_buf;
+    static t_read_buf read_buf;
+    static t_flock flock;
+    static t_fallocate fallocate;
   } ;
 };
 
