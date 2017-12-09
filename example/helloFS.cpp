@@ -33,8 +33,7 @@ int HelloFS::getattr(const char *path, struct stat *stbuf, struct fuse_file_info
 }
 
 int HelloFS::readdir(const char *path, void *buf, fuse_fill_dir_t filler,
-			               off_t, struct fuse_file_info *,
-                     enum fuse_readdir_flags)
+			               off_t, struct fuse_file_info *, enum fuse_readdir_flags)
 {
 	if (path != root_path)
 		return -ENOENT;
@@ -62,7 +61,7 @@ int HelloFS::open(const char *path, struct fuse_file_info *fi)
 int HelloFS::read(const char *path, char *buf, size_t size, off_t offset,
 		              struct fuse_file_info *)
 {
-	if(path != hello_path)
+	if (path != hello_path)
 		return -ENOENT;
 
 	size_t len;
