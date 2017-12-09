@@ -60,13 +60,12 @@ int HelloFS::open(const char *path, struct fuse_file_info *fi)
 
 
 int HelloFS::read(const char *path, char *buf, size_t size, off_t offset,
-		              struct fuse_file_info *fi)
+		              struct fuse_file_info *)
 {
 	if(path != hello_path)
 		return -ENOENT;
 
 	size_t len;
-	(void) fi;
 	len = hello_str.length();
 	if ((size_t)offset < len) {
 		if (offset + size > len)
