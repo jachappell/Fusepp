@@ -3,27 +3,29 @@
 #include "helloFS.h"
 
 #include <iostream>
-
-#include <stdio.h>
+#include <string>
 
 // include in one .cpp file
 #include "Fuse-impl.h"
 
-static const char *hello_str = "Hello World!\n";
-static const char *hello_path = "/hello";
+using namespace std;
+
+static const string root_path = "/";
+static const string hello_str = "Hello World!\n";
+static const string hello_path = "/hello";
 
 int HelloFS::getattr(const char *path, struct stat *stbuf, struct fuse_file_info *)
 {
 	int res = 0;
 
 	memset(stbuf, 0, sizeof(struct stat));
-	if (strcmp(path, "/") == 0) {
+	if (path == root_path) {
 		stbuf->st_mode = S_IFDIR | 0755;
 		stbuf->st_nlink = 2;
-	} else if (strcmp(path, hello_path) == 0) {
+	} else if (path == hello_path) {
 		stbuf->st_mode = S_IFREG | 0444;
 		stbuf->st_nlink = 1;
-		stbuf->st_size = strlen(hello_str);
+		stbuf->st_size = hello_str.length();
 	} else
 		res = -ENOENT;
 
@@ -34,12 +36,12 @@ int HelloFS::readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 			               off_t, struct fuse_file_info *,
                      enum fuse_readdir_flags)
 {
-	if (strcmp(path, "/") != 0)
+	if (path != root_path)
 		return -ENOENT;
 
 	filler(buf, ".", NULL, 0, FUSE_FILL_DIR_PLUS);
 	filler(buf, "..", NULL, 0, FUSE_FILL_DIR_PLUS);
-	filler(buf, hello_path + 1, NULL, 0, FUSE_FILL_DIR_PLUS);
+	filler(buf, hello_path.c_str() + 1, NULL, 0, FUSE_FILL_DIR_PLUS);
 
 	return 0;
 }
@@ -47,7 +49,7 @@ int HelloFS::readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 
 int HelloFS::open(const char *path, struct fuse_file_info *fi)
 {
-	if (strcmp(path, hello_path) != 0)
+	if (path != hello_path)
 		return -ENOENT;
 
 	if ((fi->flags & 3) != O_RDONLY)
@@ -60,16 +62,16 @@ int HelloFS::open(const char *path, struct fuse_file_info *fi)
 int HelloFS::read(const char *path, char *buf, size_t size, off_t offset,
 		              struct fuse_file_info *fi)
 {
-	size_t len;
-	(void) fi;
-	if(strcmp(path, hello_path) != 0)
+	if(path != hello_path)
 		return -ENOENT;
 
-	len = strlen(hello_str);
+	size_t len;
+	(void) fi;
+	len = hello_str.length();
 	if ((size_t)offset < len) {
 		if (offset + size > len)
 			size = len - offset;
-		memcpy(buf, hello_str + offset, size);
+		memcpy(buf, hello_str.c_str() + offset, size);
 	} else
 		size = 0;
 
