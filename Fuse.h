@@ -2,7 +2,7 @@
 /**
  *  FuseApp -- A simple C++ wrapper for the FUSE filesystem
  *
- *  Copyright (C) 2016 by James A. Chappell (rlrrlrll@gmail.com)
+ *  Copyright (C) 2017 by James A. Chappell (rlrrlrll@gmail.com)
  *
  *  Permission is hereby granted, free of charge, to any person
  *  obtaining a copy of this software and associated documentation
@@ -99,14 +99,14 @@ namespace Fusepp
       load_operations_();
     }
 
-    int run(int argc, char **argv)
+    auto run(int argc, char **argv)
     {
       return fuse_main(argc, argv, Operations(), this);
     }
 
-    static struct fuse_operations* Operations() { return &operations_; }
+    auto Operations() { return &operations_; }
 
-    static T* this_()
+    static auto this_()
     {
       return static_cast<T*>(fuse_get_context()->private_data);
     }
