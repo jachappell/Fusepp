@@ -2,7 +2,7 @@
 /**
  *  FuseApp -- A simple C++ wrapper for the FUSE filesystem
  *
- *  Copyright (C) 2017 by James A. Chappell (rlrrlrll@gmail.com)
+ *  Copyright (C) 2018 by James A. Chappell (rlrrlrll@gmail.com)
  *
  *  Permission is hereby granted, free of charge, to any person
  *  obtaining a copy of this software and associated documentation
@@ -32,8 +32,6 @@
 
 #include <fuse.h>
 #include <string.h>
-
-#include <boost/noncopyable.hpp>
 
 namespace Fusepp
 {
@@ -90,7 +88,7 @@ namespace Fusepp
   typedef int (*t_fallocate) (const char *, int, off_t, off_t,
                               struct fuse_file_info *);
 
-  template <class T> class Fuse : private boost::noncopyable
+  template <class T> class Fuse 
   {
   public:
     Fuse()
@@ -98,6 +96,12 @@ namespace Fusepp
       memset (&T::operations_, 0, sizeof (struct fuse_operations));
       load_operations_();
     }
+
+    // no copy
+    Fuse(const Fuse&) = delete;
+    Fuse& operator=(const Fuse&) = delete;
+
+    ~Fuse() = default;
 
     auto run(int argc, char **argv)
     {
