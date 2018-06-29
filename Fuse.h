@@ -31,7 +31,7 @@
 #endif
 
 #include <fuse.h>
-#include <string.h>
+#include <cstring>
 
 namespace Fusepp
 {
