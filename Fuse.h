@@ -2,7 +2,7 @@
 /**
  *  FuseApp -- A simple C++ wrapper for the FUSE filesystem
  *
- *  Copyright (C) 2018 by James A. Chappell (rlrrlrll@gmail.com)
+ *  Copyright (C) 2019 by James A. Chappell (rlrrlrll@gmail.com)
  *
  *  Permission is hereby granted, free of charge, to any person
  *  obtaining a copy of this software and associated documentation
@@ -27,7 +27,7 @@
 #define __FUSE_APP_H__
 
 #ifndef FUSE_USE_VERSION
-#define FUSE_USE_VERSION 30
+#define FUSE_USE_VERSION 32
 #endif
 
 #include <fuse.h>
@@ -75,7 +75,14 @@ namespace Fusepp
   typedef int(*t_utimens) (const char *, const struct timespec tv[2],
                             struct fuse_file_info *fi);
   typedef int(*t_bmap) (const char *, size_t blocksize, uint64_t *idx);
-  typedef int(*t_ioctl) (const char *, int cmd, void *arg,
+
+// if using libfuse prior to tje 3.5 release, define PRE350 before including
+// this file, or define it on the build command line
+#ifndef PRE350
+  typedef int(*t_ioctl) (const char *, unsigned int cmd, void *arg,
+#else
+  typedef int(*t_ioctl) (const char *, unsigned int cmd, void *arg,
+#endif
                          struct fuse_file_info *, unsigned int flags,
                          void *data);
   typedef int(*t_poll) (const char *, struct fuse_file_info *,
