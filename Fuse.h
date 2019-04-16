@@ -76,7 +76,7 @@ namespace Fusepp
                             struct fuse_file_info *fi);
   typedef int(*t_bmap) (const char *, size_t blocksize, uint64_t *idx);
 
-// if using libfuse prior to tje 3.5 release, define PRE350 before including
+// if using libfuse prior to the 3.5 release, define PRE350 before including
 // this file, or define it on the build command line
 #ifndef PRE350
   typedef int(*t_ioctl) (const char *, unsigned int cmd, void *arg,
