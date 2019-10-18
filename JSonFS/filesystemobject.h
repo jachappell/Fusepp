@@ -11,6 +11,7 @@ protected:
 public:
   std::string getName();
   void setName(std::string name);
+  virtual void convert();
 
   friend std::ostream &operator<<(std::ostream &, const FileSystemObject &);
 };

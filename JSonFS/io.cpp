@@ -7,27 +7,27 @@
 #include <sstream>
 #include <string>
 
-Directory parse(boost::property_tree::ptree root) {
-  Directory root_dir;
+Directory* parse(boost::property_tree::ptree root) {
+  Directory* root_dir = new Directory();
 
-  root_dir.setName(root.get<std::string>("name"));
+  root_dir->setName(root.get<std::string>("name"));
 
   BOOST_FOREACH (boost::property_tree::ptree::value_type &v,
                  root.get_child("content")) {
     if (auto t = v.second.get<std::string>("type"); t == "directory") {
-      root_dir.addEntry(parse(v.second));
+      root_dir->addEntry(parse(v.second));
     } else {
-      File f;
-      f.setName(v.second.get<std::string>("name"));
-      f.setContent(v.second.get<std::string>("content"));
-      root_dir.addEntry(f);
+      File* f = new File();
+      f->setName(v.second.get<std::string>("name"));
+      f->setContent(v.second.get<std::string>("content"));
+      root_dir->addEntry(f);
     }
   }
 
   return root_dir;
 }
 
-Directory load(std::string filename) {
+Directory* load(std::string filename) {
   std::ifstream json_file = std::ifstream(filename);
   std::stringstream ss;
   ss << json_file.rdbuf();
@@ -37,6 +37,7 @@ Directory load(std::string filename) {
   return parse(root);
 }
 
+/*
 boost::property_tree::ptree add(FileSystemObject root_dir) {
   std::cout << "add(FileSystemObject)" << std::endl;
   boost::property_tree::ptree dir;
@@ -50,7 +51,7 @@ boost::property_tree::ptree add(Directory root_dir) {
   dir.put(boost::property_tree::ptree::path_type{"type"}, "directory");
   for (auto elem : root_dir.getContent()) {
     std::cout << elem.first << std::endl;
-    boost::property_tree::ptree child = add(elem.second);
+    //boost::property_tree::ptree child = add(elem.second);
   }
   // dir.put(boost::property_tree::ptree::path_type{"content"}, children);
   return dir;
@@ -62,11 +63,11 @@ boost::property_tree::ptree add(File root_dir) {
   return file;
 }
 
-void save(Directory root_dir, std::string filename) {
+void save(Directory* root_dir, std::string filename) {
   std::ofstream json_file = std::ofstream(filename);
 
-  boost::property_tree::ptree root = add(root_dir);
-  /*
+  boost::property_tree::ptree root;
+  root_dir->convert();
       boost::property_tree::ptree , file, file2, children;
 
       file.put(boost::property_tree::ptree::path_type{"name"}, "foo.txt");
@@ -84,11 +85,12 @@ void save(Directory root_dir, std::string filename) {
       root.put(boost::property_tree::ptree::path_type{"type"}, "directory");
       root.put_child(boost::property_tree::ptree::path_type{"content"},
      getContent(root_dir));
-  */
 
   std::stringstream ss;
+  //std::cout << __LINE__<< root << std::endl;
   boost::property_tree::write_json(ss, root);
-  std::cout << ss.str() << std::endl;
+  std::cout << __LINE__<< ss.str() << std::endl;
   json_file << ss.str();
   json_file.close();
 }
+  */

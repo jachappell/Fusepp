@@ -11,6 +11,7 @@ private:
 public:
   std::string getContent();
   void setContent(std::string name);
+  void convert();
 
   friend std::ostream &operator<<(std::ostream &, const File &);
 };
