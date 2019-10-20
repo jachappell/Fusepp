@@ -81,7 +81,7 @@ namespace Fusepp
 #ifndef PRE350
   typedef int(*t_ioctl) (const char *, unsigned int cmd, void *arg,
 #else
-  typedef int(*t_ioctl) (const char *, unsigned int cmd, void *arg,
+  typedef int(*t_ioctl) (const char *, int cmd, void *arg,
 #endif
                          struct fuse_file_info *, unsigned int flags,
                          void *data);
