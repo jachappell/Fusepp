@@ -27,7 +27,7 @@
 #define __FUSE_APP_H__
 
 #ifndef FUSE_USE_VERSION
-#define FUSE_USE_VERSION 32
+#define FUSE_USE_VERSION 35
 #endif
 
 #include <fuse.h>
@@ -76,12 +76,10 @@ namespace Fusepp
                             struct fuse_file_info *fi);
   typedef int(*t_bmap) (const char *, size_t blocksize, uint64_t *idx);
 
-// if using libfuse prior to the 3.5 release, define PRE350 before including
-// this file, or define it on the build command line
-#ifndef PRE350
-  typedef int(*t_ioctl) (const char *, unsigned int cmd, void *arg,
-#else
+#if FUSE_USE_VERSION < 35
   typedef int(*t_ioctl) (const char *, int cmd, void *arg,
+#else
+  typedef int(*t_ioctl) (const char *, unsigned int cmd, void *arg,
 #endif
                          struct fuse_file_info *, unsigned int flags,
                          void *data);
