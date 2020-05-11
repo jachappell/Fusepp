@@ -5,9 +5,6 @@
 #include <iostream>
 #include <string>
 
-// include in one .cpp file
-#include "Fuse-impl.h"
-
 using namespace std;
 
 static const string root_path = "/";
