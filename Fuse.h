@@ -2,7 +2,7 @@
 /**
  *  FuseApp -- A simple C++ wrapper for the FUSE filesystem
  *
- *  Copyright (C) 2019 by James A. Chappell (rlrrlrll@gmail.com)
+ *  Copyright (C) 2021 by James A. Chappell (rlrrlrll@gmail.com)
  *
  *  Permission is hereby granted, free of charge, to any person
  *  obtaining a copy of this software and associated documentation
@@ -105,6 +105,7 @@ namespace Fusepp
     // no copy
     Fuse(const Fuse&) = delete;
     Fuse& operator=(const Fuse&) = delete;
+    Fuse& operator= (Fuse&&) = delete;
 
     ~Fuse() = default;
 
