@@ -33,8 +33,6 @@
 #include <fuse.h>
 #include <string.h>
 
-#include <boost/noncopyable.hpp>
-
 namespace Fusepp
 {
   typedef int(*t_readlink)(const char *, char *, size_t);
@@ -78,7 +76,7 @@ namespace Fusepp
   typedef int(*t_fgetattr) (const char *, struct stat *,
                             struct fuse_file_info *);
 
-  template <class T> class Fuse : private boost::noncopyable
+  template <class T> class Fuse :
   {
   public:
     Fuse()
@@ -86,6 +84,13 @@ namespace Fusepp
       memset (&T::operations_, 0, sizeof (struct fuse_operations));
       load_operations_();
     }
+
+    // no copy
+    Fuse(const Fuse&) = delete;
+    Fuse& operator=(const Fuse&) = delete;
+    Fuse& operator= (Fuse&&) = delete;
+
+    ~Fuse() = default;
 
     int run(int argc, char **argv)
     {
