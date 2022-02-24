@@ -76,7 +76,7 @@ namespace Fusepp
   typedef int(*t_fgetattr) (const char *, struct stat *,
                             struct fuse_file_info *);
 
-  template <class T> class Fuse :
+  template <class T> class Fuse
   {
   public:
     Fuse()
