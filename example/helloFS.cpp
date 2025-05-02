@@ -2,8 +2,6 @@
 
 #include "helloFS.h"
 
-//#include <iostream>
-
 // include in one .cpp file
 #include "Fuse-impl.h"
 
