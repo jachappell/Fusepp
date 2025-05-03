@@ -5,18 +5,18 @@
 // include in one .cpp file
 #include "Fuse-impl.h"
 
-int HelloFS::getattr(const char *path, struct stat *stbuf, struct fuse_file_info *)
+int HelloFS::getattr(const char *path, struct stat *stBuffer, struct fuse_file_info *)
 {
 	int res = 0;
 
-	memset(stbuf, 0, sizeof(struct stat));
+	memset(stBuffer, 0, sizeof(struct stat));
 	if (path == this_()->rootPath()) {
-		stbuf->st_mode = S_IFDIR | 0755;
-		stbuf->st_nlink = 2;
+		stBuffer->st_mode = S_IFDIR | 0755;
+		stBuffer->st_nlink = 2;
 	} else if (path == this_()->helloPath()) {
-		stbuf->st_mode = S_IFREG | 0444;
-		stbuf->st_nlink = 1;
-		stbuf->st_size = this_()->helloStr().length();
+		stBuffer->st_mode = S_IFREG | 0444;
+		stBuffer->st_nlink = 1;
+		stBuffer->st_size = static_cast<off_t>(this_()->helloStr().length());
 	} else
 		res = -ENOENT;
 
@@ -29,9 +29,9 @@ int HelloFS::readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 	if (path != this_()->rootPath())
 		return -ENOENT;
 
-	filler(buf, ".", NULL, 0, FUSE_FILL_DIR_PLUS);
-	filler(buf, "..", NULL, 0, FUSE_FILL_DIR_PLUS);
-	filler(buf, this_()->helloPath().c_str() + 1, NULL, 0, FUSE_FILL_DIR_PLUS);
+	filler(buf, ".", nullptr, 0, FUSE_FILL_DIR_PLUS);
+	filler(buf, "..", nullptr, 0, FUSE_FILL_DIR_PLUS);
+	filler(buf, this_()->helloPath().c_str() + 1, nullptr, 0, FUSE_FILL_DIR_PLUS);
 
 	return 0;
 }
@@ -55,14 +55,13 @@ int HelloFS::read(const char *path, char *buf, size_t size, off_t offset,
 	if (path != this_()->helloPath())
 		return -ENOENT;
 
-	size_t len;
-	len = this_()->helloStr().length();
-	if ((size_t)offset < len) {
+	auto len = this_()->helloStr().length();
+	if (static_cast<size_t>(offset) < len) {
 		if (offset + size > len)
 			size = len - offset;
 		memcpy(buf, this_()->helloStr().c_str() + offset, size);
 	} else
 		size = 0;
 
-	return size;
+	return static_cast<int>(size);
 }

@@ -23,8 +23,7 @@
  *  OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef __FUSE_APP_H__
-#define __FUSE_APP_H__
+#pragma once
 
 #ifndef FUSE_USE_VERSION
 #define FUSE_USE_VERSION 35
@@ -114,7 +113,7 @@ namespace Fusepp
       return fuse_main(argc, argv, Operations(), this);
     }
 
-    auto Operations() { return &operations_; }
+    static auto Operations() { return &operations_; }
 
     static auto this_()
     {
@@ -212,4 +211,3 @@ namespace Fusepp
   } ;
 };
 
-#endif

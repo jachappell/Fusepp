@@ -1,7 +1,6 @@
 // Hello filesystem class definition
 
-#ifndef __HELLOFS_H_
-#define __HELLOFS_H_
+#pragma once
 
 #include <string>
 
@@ -12,9 +11,9 @@
 class HelloFS : public Fusepp::Fuse<HelloFS>
 {
 public:
-  HelloFS() {}
+  HelloFS() = default;
 
-  ~HelloFS() {}
+  ~HelloFS() = default;
 
   static int getattr (const char *, struct stat *, struct fuse_file_info *);
 
@@ -37,5 +36,3 @@ private:
     std:: string hello_str_ = "Hello World!\n";
     std::string hello_path_ = "/hello";
 };
-
-#endif
