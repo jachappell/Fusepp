@@ -6,8 +6,6 @@
 
 #include "Fuse.h"
 
-#include "Fuse-impl.h"
-
 class HelloFS : public Fusepp::Fuse<HelloFS>
 {
 public:
@@ -33,6 +31,6 @@ public:
 
 private:
     std::string root_path_ = "/";
-    std:: string hello_str_ = "Hello World!\n";
+    std::string hello_str_ = "Hello World!\n";
     std::string hello_path_ = "/hello";
 };

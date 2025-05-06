@@ -16,6 +16,7 @@ set(LIBS ${LIBS} ${FUSE_LIBRARIES})
 add_executable(example
         hello.cpp
         helloFS.cpp
-        helloFS.h)
+        helloFS.h
+)
 
 target_link_libraries(example ${LIBS})
