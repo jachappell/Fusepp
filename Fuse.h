@@ -2,7 +2,7 @@
 /**
  *  FuseApp -- A simple C++ wrapper for the FUSE filesystem
  *
- *  Copyright (C) 2021 by James A. Chappell (rlrrlrll@gmail.com)
+ *  Copyright (C) 2025 by James A. Chappell (rlrrlrll@gmail.com)
  *
  *  Permission is hereby granted, free of charge, to any person
  *  obtaining a copy of this software and associated documentation
@@ -92,9 +92,30 @@ namespace Fusepp
   typedef int (*t_fallocate) (const char *, int, off_t, off_t,
                               struct fuse_file_info *);
 
-  template <class T> class Fuse 
+  /**
+   * @class Fuse
+   * @brief A template class that defines a framework for creating a FUSE-based filesystem.
+   *
+   * This class encapsulates the functionality needed to integrate with the FUSE (Filesystem in Userspace) library
+   * and provides a structure to define callback operations for interacting with a custom filesystem.
+   *
+   * @tparam T The derived class implementing the specific filesystem logic, which must include the required
+   * static callback operations used during filesystem events (e.g., getattr, mkdir, open, etc.).
+   *
+   * @note The class uses static operations and forbids copying or moving to maintain the integrity
+   * of the FUSE library's operational model.
+   */
+  template <class T> class Fuse
   {
   public:
+    /**
+     * @brief Constructor for the Fuse class.
+     *
+     * Initializes the `fuse_operations` structure to zero and
+     * loads the operations for the FUSE-based filesystem.
+     *
+     * @return A default-constructed instance of the Fuse class.
+     */
     Fuse()
     {
       memset (&T::operations_, 0, sizeof (struct fuse_operations));
@@ -103,18 +124,64 @@ namespace Fusepp
 
     // no copy
     Fuse(const Fuse&) = delete;
+    Fuse(Fuse&&) = delete;
     Fuse& operator=(const Fuse&) = delete;
     Fuse& operator= (Fuse&&) = delete;
 
-    ~Fuse() = default;
+    /**
+     * @brief Virtual destructor for the Fuse class.
+     *
+     * Ensures proper cleanup of the derived class in scenarios where
+     * the Fuse class is used as a base class.
+     *
+     * Defaulted to indicate no custom destructor logic is required.
+     */
+    virtual ~Fuse() = default;
 
-    auto run(int argc, char **argv)
+    /**
+     * @brief Starts the FUSE main loop for the filesystem.
+     *
+     * This function initializes and runs the FUSE event loop, utilizing the
+     * filesystem operations provided by the `Operations` function. The loop
+     * continues until the filesystem is unmounted or terminated.
+     *
+     * @param argc The number of command-line arguments passed to the program.
+     * @param argv An array of strings containing the command-line arguments.
+     * @return An integer status code returned by `fuse_main`. A value of `0` indicates
+     *         the successful execution of the FUSE main loop, while a non-zero value
+     *         indicates an error or abnormal termination.
+     * Note:
+     * - This function is a virtual function that can be overridden by derived classes
+     *   to provide custom initialization logic.
+     * - The default implementation calls `fuse_main` with the `Operations` function
+     *   and the current instance of the class.
+    *  - The overridden function should insure fuse_main with the `Operations` function,
+     *   and the current instance of the class is called.
+     */
+    virtual int run(int argc, char **argv)
     {
       return fuse_main(argc, argv, Operations(), this);
     }
 
+    /**
+     * @brief Provides access to the static FUSE operations structure.
+     *
+     * This function returns a pointer to the `operations_` structure, which contains
+     * the static definitions of file system operations implemented by the FUSE framework.
+     *
+     * @return A pointer to the `operations_` structure of type `fuse_operations`.
+     */
     static auto Operations() { return &operations_; }
 
+    /**
+     * @brief Retrieves a pointer to the private data associated with the current FUSE context.
+     *
+     * This function casts the `private_data` pointer from the FUSE context to the expected class type `T*`,
+     * allowing access to the user-defined private data object associated with the filesystem instance.
+     *
+     * @tparam T The class type to which the `private_data` is cast.
+     * @return A pointer of type `T*` referring to the user-defined private data object of the filesystem.
+     */
     static auto this_()
     {
       return static_cast<T*>(fuse_get_context()->private_data);
